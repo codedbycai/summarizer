@@ -28,13 +28,15 @@ def nettoyer_segmenter(text: str,langue="french"):
     
     text = re.sub(r"[\x00-\x08\x0B-\x0C\x0E-\x1F]+", " ", text)         # caractères non imprimables
 
+    text = re.sub(r"(\w)[-'](\w)", r"\1 \2", text)                         # texte-texte
+
     text = re.sub(r"\s+", " ", text)                                    # réduire les espaces multiples
     # print(text)
     # print()
 
-    phrases = sent_tokenize(text,language=langue)                       #
+    phrases = sent_tokenize(text,language=langue)                       # separe en phrases
     # for i,phrase in enumerate(phrases,1):
-    #     print(f"{i}. {phrase}")S
+    #     print(f"{i}. {phrase}")
     # print()
     
     stop_words = set(stopwords.words(langue))
@@ -45,7 +47,7 @@ def nettoyer_segmenter(text: str,langue="french"):
         tokens = word_tokenize(phrase, language=langue)                 # Phrase en mots
         #print(tokens)
         tokens = [mot.lower() for mot in tokens]                        # Conversion en minuscules
-        tokens = [mot for mot in tokens if mot.isalpha() or "-" in mot] # Suppression de la ponctuation et des chiffres
+        tokens = [mot for mot in tokens if mot.isalnum()]               # Suppression de la ponctuation 
         tokens = [mot for mot in tokens if mot not in stop_words]       # filtrage stop words
         # Stemming ou lemmatisation basique à voir
         phrases_nettoyer.append(tokens)
