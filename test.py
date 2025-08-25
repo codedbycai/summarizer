@@ -1,6 +1,7 @@
 from utils import lire_fichier,lire_fichiers
 from preprocessing import nettoyer_segmenter
 from tfidf import construire_tfidf
+from graph import similarity_matrix
 
 texte_brute = lire_fichier("exemples/article1.txt")
 list_phrases = nettoyer_segmenter(texte_brute, langue="french")      #'french' ou 'english'
@@ -13,8 +14,14 @@ print(list_phrases)
 # for i,phrase in enumerate(texte_nettoye,1):
 #     print(f"{i}. {phrase}")
 
-#tfidf 
+#tfidf.py
 matrice, vocab = construire_tfidf(list_phrases)
 print("Vocabulaire:", vocab)
 print("\nMatrice TF-IDF:" ,matrice)
+
+#graph.py
+G = similarity_matrix(matrice, seuil=0.1)
+print("Nœuds du graphe :", G.nodes())
+print("Arêtes du graphe :", G.edges())
+print("Arêtes du graphe avec poids :", G.edges(data=True))
 
