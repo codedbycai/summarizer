@@ -1,4 +1,9 @@
 import os                                                               # module système
+from numpy import dot
+from numpy.linalg import norm
+
+def cosine_similarity(u, v):
+    return float(dot(u, v) / (norm(u) * norm(v)))
 
 def lire_fichier(path):
     try:
