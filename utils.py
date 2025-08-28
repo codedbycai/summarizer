@@ -1,4 +1,6 @@
 import os                                                               # module système
+import time
+
 from numpy import dot
 from numpy.linalg import norm
 
@@ -22,3 +24,11 @@ def lire_fichiers(dossier):
             with open(chemin, "r", encoding="utf_8") as fichier:
                 textes.append(fichier.read())
     return "\n".join(textes)
+
+def mesurer_temps(func, *args, **kwargs):
+    start = time.time()
+    result = func(*args, **kwargs)
+    end = time.time()
+    duree = end - start
+
+    return result, duree

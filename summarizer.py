@@ -1,7 +1,8 @@
 import argparse
 import os
 import math
-from utils import lire_fichier,lire_fichiers
+
+from utils import lire_fichier,lire_fichiers,mesurer_temps
 from preprocessing import nettoyer_segmenter
 from tfidf import construire_tfidf
 from graph import matrix_similarity
@@ -63,7 +64,7 @@ def main():
     
     phrases_original, phrases_token = nettoyer_segmenter(texte_brut, langue=args.mode)
     # print(phrases_original)
-    matrice, vocab = construire_tfidf(phrases_token)
+    (matrice, vocab),duree = mesurer_temps(construire_tfidf,phrases_token)
     
     G,nb_nodes, nb_edges = matrix_similarity(matrice, seuil=0.1)
 
@@ -74,7 +75,7 @@ def main():
     # Affichage
     print(f"Lecture de {len(args.input)} fichiers…")
     print(f"Nombre total de phrases : {len(phrases_original)} ; termes uniques : {len(vocab)}.")
-    print(f"Construction de la matrice TF-IDF ({len(phrases_original)} × {len(vocab)})… temps écoulé : 1,2 s.")
+    print(f"Construction de la matrice TF-IDF ({len(phrases_original)} × {len(vocab)})… temps écoulé : {duree} s.")
     print(f"Construction du graphe de similarité… {nb_nodes} nœuds, {nb_edges} arêtes.")
     print(f"TextRank – itération 1 à 100 (convergence après {iter} itérations, damping=0.85).")
     print(f"Sélection des {len(resume)} phrases pour le résumé (ratio={args.ratio}).")
