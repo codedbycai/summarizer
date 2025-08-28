@@ -1,0 +1,103 @@
+import argparse
+import os
+import math
+from utils import lire_fichier,lire_fichiers
+from preprocessing import nettoyer_segmenter
+from tfidf import construire_tfidf
+from graph import matrix_similarity
+from textrank import textrank
+
+
+def charger_sources(inputs):
+    textes = []
+    for chemin in inputs:
+        if os.path.isdir(chemin):
+            textes.append(lire_fichiers(chemin))
+        elif os.path.isfile(chemin):
+            textes.append(lire_fichier(chemin))
+        else:
+            print(f"Chemin invalide : {chemin}")
+    return "\n".join(textes)  
+
+def selection_phrases(phrases, scores, ratio):
+    n = len(phrases)
+    top = math.ceil(ratio * n)  # nombre de phrases à garder  ⌈ P × N ⌉
+
+    # associer phrase index + score
+    phrases_scores = []
+    for i in range(n):
+        phrase_texte = phrases[i]  # reconstruire en texte
+        phrases_scores.append((i, scores[i], phrase_texte))
+         
+    # trier score décroissant
+    phrases_scores.sort(key=lambda x: x[1], reverse=True)
+
+    # garder les meilleures
+    top_phrases = phrases_scores[:top]
+
+    # remettre dans l’ordre du texte original (index croissant)
+    top_phrases.sort(key=lambda x: x[0])
+
+    # for i, phrase in enumerate(top_phrases, start=1):
+    #     print(f"{i}. {phrase}")
+    # Retourner seulement le texte des phrases
+    return [p[2] for p in top_phrases]
+    
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input",nargs="+",required=True)
+    parser.add_argument("--ratio",type=float,required=True)
+    parser.add_argument("--mode",choices=["french","english"],required=True)
+    parser.add_argument("--output",type=str,default=None)
+    args = parser.parse_args()
+
+    if not args.input:
+        print("Erreur : aucun fichier valide trouvé.")
+        return
+    
+    if not (0.05 <= args.ratio <= 0.5):
+        print("Erreur : le ratio doit être compris entre 0.05 et 0.5")
+        return
+    
+    texte_brut = charger_sources(args.input)
+    
+    phrases_original, phrases_token = nettoyer_segmenter(texte_brut, langue=args.mode)
+    # print(phrases_original)
+    matrice, vocab = construire_tfidf(phrases_token)
+    
+    G,nb_nodes, nb_edges = matrix_similarity(matrice, seuil=0.1)
+
+    iter,scores = textrank(G)
+    
+    resume = selection_phrases(phrases_original,scores,args.ratio)
+
+    # Affichage
+    print(f"Lecture de {len(args.input)} fichiers…")
+    print(f"Nombre total de phrases : {len(phrases_original)} ; termes uniques : {len(vocab)}.")
+    print(f"Construction de la matrice TF-IDF ({len(phrases_original)} × {len(vocab)})… temps écoulé : 1,2 s.")
+    print(f"Construction du graphe de similarité… {nb_nodes} nœuds, {nb_edges} arêtes.")
+    print(f"TextRank – itération 1 à 100 (convergence après {iter} itérations, damping=0.85).")
+    print(f"Sélection des {len(resume)} phrases pour le résumé (ratio={args.ratio}).")
+
+    # Emplacement du fichier de sortie ou, si --output omis, afficher le résumé dans la console.
+    if args.output:
+        with open(args.output, "w", encoding="utf-8") as f:
+            f.write("\n".join(resume))
+        print(f"Résumé enregistré dans {args.output}")
+    else:
+        print("\nRésumé généré :\n")
+        print("\n".join(resume))
+
+if __name__ == "__main__":
+    main()
+
+"""
+    python summarizer.py --input exemples/article1.txt exemples/corpus/texte1.txt \
+                     --ratio 0.2 \
+                     --mode french \
+                     --output résumé.txt
+    python summarizer.py --input exemples/article1.txt \
+                     --ratio 0.2 \
+                     --mode french \
+                     --output résumé.txt
+"""

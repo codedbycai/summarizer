@@ -41,7 +41,7 @@ def textrank(adj_matrix, damping=0.85, max_iter=100, tol=1e-6):
         # Vérifier convergence (écart entre anciens et nouveaux scores)
         diff = np.sum(np.abs(new_scores - scores))
         if diff < tol:
-            print(f"\nConvergence en {iter} itérations\n")
+            
             break
 
         scores = new_scores
@@ -51,4 +51,4 @@ def textrank(adj_matrix, damping=0.85, max_iter=100, tol=1e-6):
     if max_score > 0:
         scores = scores / max_score
 
-    return scores.tolist()
+    return iter,scores.tolist()

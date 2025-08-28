@@ -52,4 +52,4 @@ def nettoyer_segmenter(text: str,langue="french"):
         # Stemming ou lemmatisation basique à voir
         phrases_nettoyer.append(tokens)
 
-    return phrases_nettoyer
+    return phrases,phrases_nettoyer
