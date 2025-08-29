@@ -11,14 +11,18 @@ from textrank import textrank
 
 def charger_sources(inputs):
     textes = []
+    nb_fichiers = 0
     for chemin in inputs:
         if os.path.isdir(chemin):
-            textes.append(lire_fichiers(chemin))
+            contenu, n = lire_fichiers(chemin)
+            textes.append(contenu)
+            nb_fichiers += n
         elif os.path.isfile(chemin):
             textes.append(lire_fichier(chemin))
+            nb_fichiers += 1
         else:
             print(f"Chemin invalide : {chemin}")
-    return "\n".join(textes)  
+    return "\n".join(textes), nb_fichiers
 
 def selection_phrases(phrases, scores, ratio):
     n = len(phrases)
@@ -60,24 +64,24 @@ def main():
         print("Erreur : le ratio doit être compris entre 0.05 et 0.5")
         return
     
-    texte_brut = charger_sources(args.input)
+    texte_brut,nb_fichiers = charger_sources(args.input)
     
     phrases_original, phrases_token = nettoyer_segmenter(texte_brut, langue=args.mode)
     # print(phrases_original)
-    (matrice, vocab),duree = mesurer_temps(construire_tfidf,phrases_token)
-    
-    G,nb_nodes, nb_edges = matrix_similarity(matrice, seuil=0.1)
 
-    iter,scores = textrank(G)
+    (matrice, vocab),duree_tfidf = mesurer_temps(construire_tfidf,phrases_token)
+    (G, nb_nodes, nb_edges), duree_graph = mesurer_temps(matrix_similarity,matrice, 0.1)
+    (iter, scores), duree_textrank = mesurer_temps(textrank,G)
     
     resume = selection_phrases(phrases_original,scores,args.ratio)
 
     # Affichage
-    print(f"Lecture de {len(args.input)} fichiers…")
-    print(f"Nombre total de phrases : {len(phrases_original)} ; termes uniques : {len(vocab)}.")
-    print(f"Construction de la matrice TF-IDF ({len(phrases_original)} × {len(vocab)})… temps écoulé : {duree} s.")
-    print(f"Construction du graphe de similarité… {nb_nodes} nœuds, {nb_edges} arêtes.")
-    print(f"TextRank – itération 1 à 100 (convergence après {iter} itérations, damping=0.85).")
+    print(f"\nLecture de {nb_fichiers} fichiers…")
+    print(f"Nombre total de phrases : {len(phrases_original)} ; termes uniques : {len(vocab)}.\n")
+    print(f"Construction de la matrice TF-IDF ({len(phrases_original)} × {len(vocab)})… temps écoulé : {duree_tfidf:.3f} s.")
+    print(f"Construction du graphe de similarité… {nb_nodes} nœuds, {nb_edges} arêtes… temps écoulé : {duree_graph:.3f} s.")
+    print(f"TextRank – itération 1 à 100 (convergence après {iter} itérations, damping=0.85)… temps écoulé : {duree_textrank:.3f} s.")
+    print(f"Temps d’exécution total : {duree_tfidf + duree_graph + duree_textrank:.3f} s.\n")
     print(f"Sélection des {len(resume)} phrases pour le résumé (ratio={args.ratio}).")
 
     # Emplacement du fichier de sortie ou, si --output omis, afficher le résumé dans la console.
