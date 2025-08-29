@@ -17,6 +17,14 @@ def calculer_tf(phrases, vocabulaire):
     for phrase in phrases:
         tf_phrase = {}
         nb_mots = len(phrase)
+
+        if nb_mots == 0:  
+            # si la phrase est vide, tout mettre à 0
+            for mot in vocabulaire:
+                tf_phrase[mot] = 0
+            tf_list.append(tf_phrase)
+            continue
+
         compteur = Counter(phrase)            # dictionnaire
         for mot in vocabulaire:
             tf_phrase[mot] = compteur[mot] / nb_mots
