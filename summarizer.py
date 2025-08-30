@@ -71,7 +71,10 @@ def main():
 
     (matrice, vocab),duree_tfidf = mesurer_temps(construire_tfidf,phrases_token)
     (G, nb_nodes, nb_edges), duree_graph = mesurer_temps(matrix_similarity,matrice, 0.1)
+    
     (iter, scores), duree_textrank = mesurer_temps(textrank,G)
+    if iter >= 100:  # max_iter défini dans textrank
+        return
     
     resume = selection_phrases(phrases_original,scores,args.ratio)
 

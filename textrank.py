@@ -41,14 +41,12 @@ def textrank(adj_matrix, damping=0.85, max_iter=100, tol=1e-6):
         # Vérifier convergence (écart entre anciens et nouveaux scores)
         diff = np.sum(np.abs(new_scores - scores))
         if diff < tol:
-            
-            break
+            return iter+1,(new_scores / new_scores.max()).tolist()
 
         scores = new_scores
 
-    # Normalisation entre 0 et 1
-    max_score = max(scores)
-    if max_score > 0:
-        scores = scores / max_score
+    # si on sort de la boucle = pas de convergence
+    print(f"[ATTENTION] PageRank n’a pas convergé après {max_iter} itérations.\n"
+          f"                Essayez un damping factor plus bas ou acceptez ce résultat.")
 
-    return iter,scores.tolist()
+    return iter+1,(new_scores / new_scores.max()).tolist()
