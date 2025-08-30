@@ -1,4 +1,4 @@
-## Application de Résumé Automatique de Textes (Extractive Summarization)
+## Application - Résumé Automatique de Textes (Extractive Summarization)
 
 
 ## 1. Présentation du projet
@@ -48,12 +48,12 @@ python summarizer.py \
     --input exemples/article1.txt \
     --ratio 0.2 \
     --mode french \
-    --output exemples/article1_summary.txt
+    --output article1_summary.txt
 ```
 
 ```bash
 python summarizer.py \
-    --input exemples/corpus \
+    --input exemples/corpus exemples/article1.txt \
     --ratio 0.5 \
     --mode english
 ```
@@ -127,18 +127,46 @@ pytest --maxfail=1 --disable-warnings -q
 ---
 
 ## 7. Historique Git
-
-**Le projet a été développé en suivant un workflow basé sur plusieurs branches** :
-
+1. **Workflow utilisé**
 * **main** : branche stable contenant les versions validées.
-* **feature/...** : une branche par fonctionnalité.
+* **feature/...** : une branche développée, puis fusionnée dans `main` une fois terminée.
     * `feature/preprocessing`
      * `feature/tfidf`
      * `feature/graph`
      * `feature/textrank`
      * `feature/cli`
 
-**Messages de commit** :
+2. **Commandes utiles** :
+* Créer et changer de branche
+```bash 
+git switch -c feature/...               # créer une branche
+git switch main                         # changer de branche
+```
+* Suivi des fichiers
+```bash
+git status                              # voir les fichiers modifiés
+git add fichier.py                      # ajouter un fichier spécifique
+git add .                               # ajouter tous les fichiers modifiés
+``` 
+
+* Commit
+```bash 
+git commit -m "[CLI] Ajout gestion des arguments"
+```
+* Pousser / récupérer sur GitHub
+```bash
+git push origin feature/...             # envoyer sur GitHub
+git pull origin main                    # récupérer les derniers changements
+```
+
+* Fusionner une branche
+```bash
+git switch main
+git merge feature/...
+```
+
+
+3. **Messages de commit** :
 * **[PREP]** : Prétraitement (nettoyage, segmentation, tokenisation)
 * **[TFIDF]** : Calcul TF, IDF et matrice TF-IDF  
 * **[GRAPH]** : Construction graphe de similarité
@@ -147,9 +175,9 @@ pytest --maxfail=1 --disable-warnings -q
 * **[UTILS]** : Fonctions utilitaires (mesure du temps, lecture fichiers, etc.) 
 * **[DOC]** : Rédaction du README.
 
-**Pour consulter tout l’historique des commits et suivre l’avancement du projet** :
-* En ligne de commande :
+4. **Pour consulter tout l’historique des commits et suivre l’avancement du projet** :
 
+* En local (ligne de commande) :
 ```bash
 git log --oneline --decorate --graph
 ```
