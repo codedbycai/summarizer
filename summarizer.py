@@ -12,16 +12,21 @@ from textrank import textrank
 def charger_sources(inputs):
     textes = []
     nb_fichiers = 0
+    print("Fichier :")
     for chemin in inputs:
         if os.path.isdir(chemin):
             contenu, n = lire_fichiers(chemin)
+            for nom_fichier in os.listdir(chemin):
+                if nom_fichier.endswith(".txt"):
+                    print("-",nom_fichier)
             textes.append(contenu)
             nb_fichiers += n
         elif os.path.isfile(chemin):
             textes.append(lire_fichier(chemin))
+            print("-",chemin)
             nb_fichiers += 1
         else:
-            print(f"Chemin invalide : {chemin}")
+            print(f"[ERREUR] Chemin invalide '{chemin}'")
     return "\n".join(textes), nb_fichiers
 
 def selection_phrases(phrases, scores, ratio):
@@ -56,15 +61,15 @@ def main():
     parser.add_argument("--output",type=str,default=None)
     args = parser.parse_args()
 
-    if not args.input:
-        print("Erreur : aucun fichier valide trouvé.")
+    texte_brut,nb_fichiers = charger_sources(args.input)
+
+    if nb_fichiers == 0:
+        print(">> Aucun fichier valide trouvé.")
         return
     
     if not (0.05 <= args.ratio <= 0.5):
-        print("Erreur : le ratio doit être compris entre 0.05 et 0.5")
+        print("[ATTENTION] Le ratio doit être compris entre 0.05 et 0.5")
         return
-    
-    texte_brut,nb_fichiers = charger_sources(args.input)
     
     phrases_original, phrases_token = nettoyer_segmenter(texte_brut, langue=args.mode)
     # print(phrases_original)
@@ -79,7 +84,7 @@ def main():
     resume = selection_phrases(phrases_original,scores,args.ratio)
 
     # Affichage
-    print(f"\nLecture de {nb_fichiers} fichiers…")
+    print(f"Lecture de {nb_fichiers} fichiers…")
     print(f"Nombre total de phrases : {len(phrases_original)} ; termes uniques : {len(vocab)}.\n")
     print(f"Construction de la matrice TF-IDF ({len(phrases_original)} × {len(vocab)})… temps écoulé : {duree_tfidf:.3f} s.")
     print(f"Construction du graphe de similarité… {nb_nodes} nœuds, {nb_edges} arêtes… temps écoulé : {duree_graph:.3f} s.")

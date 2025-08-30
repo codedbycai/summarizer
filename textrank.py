@@ -6,14 +6,14 @@ def textrank(adj_matrix, damping=0.85, max_iter=100, tol=1e-6):
     n = len(adj_matrix)
     
     if n == 0:
-        return []
+        return 0, []
 
     # convertir en numpy array
     A = np.array(adj_matrix, dtype=float)
 
     # cas sans arêtes
     if np.all(A == 0):
-        return [1.0 / n] * n
+        return 1,[1.0 / n] * n
     
     # normalisation : axis=1 (lignes), keepdims=True (keep dimension)
     row_sums = A.sum(axis=1, keepdims=True)

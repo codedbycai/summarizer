@@ -5,7 +5,11 @@ from numpy import dot
 from numpy.linalg import norm
 
 def cosine_similarity(u, v):
-    return float(dot(u, v) / (norm(u) * norm(v)))
+    norm_u = norm(u)
+    norm_v = norm(v)
+    if norm_u == 0 or norm_v == 0:
+        return 0.0   # pas de similarité si l’un des vecteurs est nul
+    return float(dot(u, v) / (norm_u * norm_v))
 
 def lire_fichier(path):
     try:
