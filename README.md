@@ -26,7 +26,7 @@ C’est donc une méthode extractive : on ne réécrit pas le texte, on extrait 
 
 a. **Cloner le dépôt et créer un environnement virtuel**
 ```bash
-git clone https://github.com/codedbycai/summarizer.git
+git clone https://github.com/codedbycai/summarizer.git projet-summarizer
 cd project-summarizer
 python3 -m venv venv
 source venv/bin/activate   # ou venv\Scripts\activate sur Windows
@@ -35,7 +35,7 @@ pip install -r requirements.txt
 
 b. **Télécharger les ressources NLTK**
 ```bash
-python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords')"
+python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords');nltk.download('punkt_tab')"
 ```
 ---
 
@@ -94,7 +94,7 @@ preprocessing.py    (nettoyage,segmentation,tokenisation)
       ↓
    graph.py         (graphe de similarité)
       ↓
-  textrank.py       (scores  des phrases PageRank)
+  textrank.py       (scores des phrases PageRank)
       ↓
  summarizer.py      (sélection des phrases → résumé final)
 ```
