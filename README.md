@@ -130,13 +130,24 @@ Résumé enregistré dans article1_summary.txt
 
 ---
 
-## 6. Test unitaires
+## 6. Tests unitaires
 * **Ligne de commande** :
 ```bash
 pytest --maxfail=1 --disable-warnings -q
 ```
-**Explication des tests fournis et de l’ajout possible de nouveaux tests.
-(TODO)**
+* **Ce qui est déjà testé**
+
+    * `TF-IDF` : vérifie que le vocabulaire, les fréquences et la matrice sont bien construits.
+
+    * `TextRank` : vérifie que l’algorithme marche sur un graphe simple et sur un cas vide.
+
+    * `Graphe` : vérifie que la matrice de similarité crée bien des liens au-dessus du seuil.
+
+* **Ce qui pourrait être ajouter**
+
+    * Tester le script principal `summarizer.py` avec de vrais fichiers.
+
+    * Tester des cas particuliers (texte vide, très gros fichier).
 
 ---
 
@@ -188,6 +199,7 @@ git merge feature/...
 * **[CLI]** : Ajout interface ligne de commande
 * **[UTILS]** : Fonctions utilitaires (mesure du temps, lecture fichiers, etc.) 
 * **[DOC]** : Rédaction du README.
+* **[TEST]** : Tests unitaires (pytest).
 
 4. **Pour consulter tout l’historique des commits et suivre l’avancement du projet** :
 
