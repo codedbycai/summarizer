@@ -44,6 +44,10 @@ python -c "import nltk; nltk.download('punkt'); nltk.download('stopwords');nltk.
  a. **Exemples de commandes CLI**
 
 ```bash
+python summarizer.py --help
+```
+
+```bash
 python summarizer.py \
     --input exemples/article1.txt \
     --ratio 0.2 \
@@ -101,17 +105,27 @@ preprocessing.py    (nettoyage,segmentation,tokenisation)
 ---
 
 ## 5. Exemple concret
-
+* `seuil = 0.1`
+* `damping = 0.85`
+* `5882 mots`
 ```bash
 python summarizer.py \
     --input exemples/article1.txt \
-    --ratio 0.2 \
-    --mode french \
-    --output exemples/article1_summary.txt
+    --ratio 0.4 \
+    --mode french  \
+    --output article1_summary.txt
+Fichier :
+- exemples/article1.txt
+Lecture de 1 fichiers…
+Nombre total de phrases : 304 ; termes uniques : 2264.
 
-    ...
-    à terminer
-    ...
+Construction de la matrice TF-IDF (304 × 2264)… temps écoulé : 0.221 s.
+Construction du graphe de similarité… 304 nœuds, 636 arêtes… temps écoulé : 0.022 s.
+TextRank – itération 1 à 100 (convergence après 37 itérations, damping=0.85)… temps écoulé : 1.103 s.
+Temps d’exécution total : 1.345 s.
+
+Sélection des 122 phrases pour le résumé (ratio=0.4).
+Résumé enregistré dans article1_summary.txt
 ```
 
 ---
@@ -122,7 +136,7 @@ python summarizer.py \
 pytest --maxfail=1 --disable-warnings -q
 ```
 **Explication des tests fournis et de l’ajout possible de nouveaux tests.
-(à faire)**
+(TODO)**
 
 ---
 
