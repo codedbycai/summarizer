@@ -46,16 +46,21 @@ def textrank(adj_matrix, damping=0.85, max_iter=100, tol=1e-6):
     # initialisation : score uniforme 1/n
     scores = np.ones(n) / n
 
+    # Ancienne version
+    # for iter in range(max_iter):
+    #     new_scores = np.zeros(n)
+
+    #     for i in range(n):
+    #         # random page is 1 - d
+    #         new_scores[i] = (1 - damping) / n
+
+    #         # contribution des voisins (redistribution des scores)
+    #         for j in range(n):
+    #             new_scores[i] += damping * M[j, i] * scores[j]
+
+    # Version NumPy
     for iter in range(max_iter):
-        new_scores = np.zeros(n)
-
-        for i in range(n):
-            # random page is 1 - d
-            new_scores[i] = (1 - damping) / n
-
-            # contribution des voisins (redistribution des scores)
-            for j in range(n):
-                new_scores[i] += damping * M[j, i] * scores[j]
+        new_scores = (1 - damping) / n + damping * M.T.dot(scores)
 
         # Vérifier convergence (écart entre anciens et nouveaux scores)
         diff = np.sum(np.abs(new_scores - scores))
