@@ -110,8 +110,8 @@ def main():
     (G, nb_nodes, nb_edges), duree_graph = mesurer_temps(
         matrix_similarity, matrice, 0.1
     )
-
-    (iter, scores), duree_textrank = mesurer_temps(textrank, G)
+    damping=0.75
+    (iter, scores), duree_textrank = mesurer_temps(textrank, G, damping)
     if iter >= 100:  # max_iter défini dans textrank
         return
 
@@ -129,7 +129,7 @@ def main():
         f"Construction du graphe de similarité… {nb_nodes} nœuds, {nb_edges} arêtes… temps écoulé : {duree_graph:.3f} s."
     )
     print(
-        f"TextRank – itération 1 à 100 (convergence après {iter} itérations, damping=0.85)… temps écoulé : {duree_textrank:.3f} s."
+        f"TextRank – itération 1 à 100 (convergence après {iter} itérations, damping={damping})… temps écoulé : {duree_textrank:.3f} s."
     )
     print(
         f"Temps d’exécution total : {duree_tfidf + duree_graph + duree_textrank:.3f} s.\n"
