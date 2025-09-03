@@ -199,7 +199,8 @@ git merge feature/...
 * **[CLI]** : Ajout interface ligne de commande
 * **[UTILS]** : Fonctions utilitaires (mesure du temps, lecture fichiers, etc.) 
 * **[DOC]** : Rédaction du README.
-* **[TEST]** : Tests unitaires (pytest).
+* **[TEST]** : Tests unitaires (pytest)
+* **[DATA]** : Textes .txt.
 
 4. **Pour consulter tout l’historique des commits et suivre l’avancement du projet** :
 
